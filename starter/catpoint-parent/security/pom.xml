@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>main-app</artifactId>
+    <artifactId>security</artifactId>
     <packaging>jar</packaging>
 
-    <name>main-app</name>
+    <name>security</name>
     <url>http://maven.apache.org</url>
 
     <properties>

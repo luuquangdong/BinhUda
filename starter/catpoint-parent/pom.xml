@@ -11,7 +11,7 @@
 
   <modules>
     <module>image-service</module>
-    <module>main-app</module>
+    <module>security</module>
   </modules>
 
   <name>catpoint-parent</name>
