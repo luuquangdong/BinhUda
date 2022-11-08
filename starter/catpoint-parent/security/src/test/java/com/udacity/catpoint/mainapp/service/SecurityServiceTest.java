@@ -44,7 +44,7 @@ public class SecurityServiceTest {
 
     @ParameterizedTest // 1
     @EnumSource(value = ArmingStatus.class, names = {"ARMED_HOME", "ARMED_AWAY"})
-    void testAlarmStatus_alarmArmedAndSensorToActivated_thenPending(ArmingStatus armingStatus){
+    void sensorActivated_alarmArmed_alarmStatusPending(ArmingStatus armingStatus){
         Sensor sensor = new Sensor("Test 1", SensorType.WINDOW);
 
         when(securityRepository.getArmingStatus()).thenReturn(armingStatus);
@@ -60,7 +60,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 2
-    void testAlarmStatus_sensorToActivatedAndAlarmAlreadyPending_thenAlarm(){
+    void sensorActivated_AlarmAlreadyPending_alarmStatusAlarm(){
         Sensor sensor = new Sensor("Test 2", SensorType.DOOR);
 
         when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
@@ -71,7 +71,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 3
-    void testAlarmStatus_alarmPendingAndAllSensorsInactive_thenNoAlarm(){
+    void allSensorsInactive_alarmPending_alarmStatusNoAlarm(){
         Set<Sensor> sensors = createSensors(false, 3);
         Sensor one = sensors.iterator().next();
         one.setActive(true);
@@ -88,7 +88,7 @@ public class SecurityServiceTest {
 
     @ParameterizedTest // 4
     @ValueSource(booleans = {true, false})
-    void testAlarmStatus_alarmActiveAndSensorChange_thenNotAffected(boolean active) {
+    void sensorChange_alarmActive_notAffectedAlarmStatus(boolean active) {
         Sensor sensor = new Sensor("Test 4", SensorType.MOTION);
         sensor.setActive(active);
 
@@ -100,7 +100,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 5
-    void testAlarmStatus_sensorActivatedWhileAlreadyActiveAndAlarmPending_thenAlarm(){
+    void sensorActivatedWhileAlreadyActive_alarmPending_alarmStatusAlarm(){
         Sensor sensor = new Sensor("Test 5", SensorType.WINDOW);
 
         when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
@@ -113,7 +113,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 6
-    void testAlarmStatus_sensorDeactivateWhileAlreadyInactive_thenNoChange(){
+    void sensorDeactivateWhileAlreadyInactive_noChangeAlarmStatus(){
         Sensor sensor = new Sensor("Test 6", SensorType.DOOR);
 
         securityService.changeSensorActivationStatus(sensor, false);
@@ -121,7 +121,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 7
-    void testAlarmStatus_imageContainCatAndSystemArmedHome_thenAlarm(){
+    void imageContainCat_systemArmedHome_alarmStatusAlarm(){
         when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
         when(imageService.imageContainsCat(any(), anyFloat())).thenReturn(true);
 
@@ -133,7 +133,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 8
-    void testAlarmStatus_imageContainNoCatAndSensorsNotActive_thenNoAlarm(){
+    void imageContainNoCat_sensorsNotActive_alarmStatusNoAlarm(){
         Set<Sensor> sensors = createSensors(false, 6);
 
         when(securityRepository.getSensors()).thenReturn(sensors);
@@ -147,7 +147,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 9
-    void testAlarmStatus_systemDisArmed_thenAlarm(){
+    void systemDisarmed_alarmStatusNoAlarm(){
         securityService.setArmingStatus(ArmingStatus.DISARMED);
 
         ArgumentCaptor<AlarmStatus> captor = ArgumentCaptor.forClass(AlarmStatus.class);
@@ -157,7 +157,7 @@ public class SecurityServiceTest {
 
     @ParameterizedTest // 10
     @EnumSource(value = ArmingStatus.class, names = {"ARMED_HOME", "ARMED_AWAY"})
-    void testSensors_systemArmed_thenAllSensorsToInactive(ArmingStatus armingStatus){
+    void systemArmed_allSensorsInactive(ArmingStatus armingStatus){
         Set<Sensor> sensors = createSensors(true, 9);
 
         when(securityRepository.getSensors()).thenReturn(sensors);
@@ -168,7 +168,7 @@ public class SecurityServiceTest {
     }
 
     @Test // 11
-    void testAlarmStatus_systemArmedHomeAndCameraShowCat_thenAlarm(){
+    void cameraShowCat_systemArmedHome_alarmStatusAlarm(){
         when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
         when(imageService.imageContainsCat(any(), anyFloat())).thenReturn(true);
 

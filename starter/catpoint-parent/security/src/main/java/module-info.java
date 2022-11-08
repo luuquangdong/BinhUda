@@ -1,4 +1,4 @@
-module main.app {
+module security {
     requires image.service;
     requires miglayout;
     requires java.desktop;

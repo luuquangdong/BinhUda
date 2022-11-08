@@ -8,7 +8,9 @@ import com.udacity.catpoint.mainapp.data.SecurityRepository;
 import com.udacity.catpoint.mainapp.data.Sensor;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,7 +40,11 @@ public class SecurityService {
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         } else {
-            getSensors().forEach(s -> s.setActive(false));
+            List<Sensor> sensors = new ArrayList<>(getSensors());
+            for(Sensor s : sensors) {
+                s.setActive(false);
+                securityRepository.updateSensor(s);
+            }
         }
         securityRepository.setArmingStatus(armingStatus);
     }

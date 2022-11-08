@@ -86,6 +86,10 @@ public class SensorPanel extends JPanel {
         revalidate();
     }
 
+    public void updateSensorList(){
+        updateSensorList(sensorListPanel);
+    }
+
     /**
      * Asks the securityService to change a sensor activation status and then rebuilds the current sensor list
      * @param sensor The sensor to update
