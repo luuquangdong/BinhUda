@@ -23,12 +23,12 @@ public class SecurityService {
     private SecurityRepository securityRepository;
     private Set<StatusListener> statusListeners = new HashSet<>();
 
-    private Detector detector;
+    private boolean catFound;
 
     public SecurityService(SecurityRepository securityRepository, IImageService imageService) {
         this.securityRepository = securityRepository;
         this.imageService = imageService;
-        detector = new Detector();
+        catFound = false;
     }
 
     /**
@@ -40,7 +40,7 @@ public class SecurityService {
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         } else {
-            if(armingStatus == ArmingStatus.ARMED_HOME && detector.isCatFound()) {
+            if(armingStatus == ArmingStatus.ARMED_HOME && catFound) {
                 setAlarmStatus(AlarmStatus.ALARM);
             }
 
@@ -70,7 +70,7 @@ public class SecurityService {
             }
         }
 
-        detector.setCatFound(cat);
+        catFound = cat;
         statusListeners.forEach(sl -> sl.catDetected(cat));
     }
 
