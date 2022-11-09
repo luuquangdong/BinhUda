@@ -2,10 +2,7 @@ package com.udacity.catpoint.mainapp.service;
 
 import com.udacity.catpoint.imageservice.service.IImageService;
 import com.udacity.catpoint.mainapp.application.StatusListener;
-import com.udacity.catpoint.mainapp.data.AlarmStatus;
-import com.udacity.catpoint.mainapp.data.ArmingStatus;
-import com.udacity.catpoint.mainapp.data.SecurityRepository;
-import com.udacity.catpoint.mainapp.data.Sensor;
+import com.udacity.catpoint.mainapp.data.*;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -26,9 +23,12 @@ public class SecurityService {
     private SecurityRepository securityRepository;
     private Set<StatusListener> statusListeners = new HashSet<>();
 
+    private Detector detector;
+
     public SecurityService(SecurityRepository securityRepository, IImageService imageService) {
         this.securityRepository = securityRepository;
         this.imageService = imageService;
+        detector = new Detector();
     }
 
     /**
@@ -40,6 +40,10 @@ public class SecurityService {
         if(armingStatus == ArmingStatus.DISARMED) {
             setAlarmStatus(AlarmStatus.NO_ALARM);
         } else {
+            if(armingStatus == ArmingStatus.ARMED_HOME && detector.isCatFound()) {
+                setAlarmStatus(AlarmStatus.ALARM);
+            }
+
             List<Sensor> sensors = new ArrayList<>(getSensors());
             for(Sensor s : sensors) {
                 s.setActive(false);
@@ -66,6 +70,7 @@ public class SecurityService {
             }
         }
 
+        detector.setCatFound(cat);
         statusListeners.forEach(sl -> sl.catDetected(cat));
     }
 
